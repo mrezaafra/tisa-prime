@@ -1,0 +1,19 @@
+{
+  "title": "صفحه اصلی",
+  "welcome": "خوش آمدید",
+  "counter": "شمارنده",
+  "currentCount": "شمارش فعلی",
+  "increment": "افزایش",
+  "decrement": "کاهش",
+  "reset": "بازنشانی",
+  "navbar": {
+    "title": "تیسا پرایم",
+    "menu": "منو"
+  },
+  "sidebar": {
+    "home": "خانه",
+    "settings": "تنظیمات",
+    "about": "درباره"
+  }
+}
+

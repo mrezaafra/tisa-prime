@@ -1,0 +1,35 @@
+:root {
+  --p-primary-color: #3b82f6;
+  --p-primary-contrast-color: #ffffff;
+  --p-surface-0: #ffffff;
+  --p-surface-50: #f9fafb;
+  --p-surface-100: #f3f4f6;
+  --p-surface-200: #e5e7eb;
+  --p-surface-300: #d1d5db;
+  --p-surface-400: #9ca3af;
+  --p-surface-500: #6b7280;
+  --p-surface-600: #4b5563;
+  --p-surface-700: #374151;
+  --p-surface-800: #1f2937;
+  --p-surface-900: #111827;
+  --p-surface-950: #030712;
+  --p-content-border-radius: 6px;
+  --p-focus-ring: 0 0 0 2px var(--p-primary-color);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  background-color: var(--p-surface-50);
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.p-component {
+  font-family: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
