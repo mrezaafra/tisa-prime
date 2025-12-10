@@ -17,6 +17,12 @@
   --p-focus-ring: 0 0 0 2px var(--p-primary-color);
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
