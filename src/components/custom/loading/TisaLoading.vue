@@ -3,11 +3,11 @@
     <Transition name="fade">
       <div v-if="modelValue" class="tisa-loading-overlay" @click.self="handleOverlayClick">
         <div class="tisa-loading-container">
-          <ProgressSpinner
-              :style="{ width: size, height: size }"
-              :strokeWidth="strokeWidth"
-              :animationDuration="animationDuration"
-          />
+          <div class="dots-loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
           <p v-if="message" class="tisa-loading-message">
             {{ message }}
           </p>
@@ -18,8 +18,6 @@
 </template>
 
 <script setup>
-import ProgressSpinner from 'primevue/progressspinner'
-
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -28,22 +26,6 @@ const props = defineProps({
   message: {
     type: String,
     default: ''
-  },
-  size: {
-    type: String,
-    default: '50px'
-  },
-  strokeWidth: {
-    type: String,
-    default: '4'
-  },
-  animationDuration: {
-    type: String,
-    default: '1s'
-  },
-  fullScreen: {
-    type: Boolean,
-    default: true
   },
   closable: {
     type: Boolean,
@@ -62,55 +44,87 @@ const handleOverlayClick = () => {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/variables.scss';
+
+// Overlay
 .tisa-loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
-  backdrop-filter: blur(2px);
+  background-color: $loading-overlay-bg;
+  backdrop-filter: blur($loading-overlay-blur);
+  z-index: $loading-overlay-z-index;
 }
 
+// Container
 .tisa-loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  background-color: var(--p-surface-0);
-  border-radius: var(--p-content-border-radius);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  min-width: 200px;
+  gap: 15px;
+  padding: 5px;
+  width: 140px;
+  min-height: 140px;
+  background-color: rgba(var(--p-surface-0-rgb, 255, 255, 255), 0.8);
+  border-radius: 10px;
+  box-shadow: $loading-container-shadow;
 }
 
+// Dots loader
+.dots-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Dot base styles
+.dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 2px;
+  transition: all 1s linear;
+  animation: bounce .7s ease 0s alternate infinite;
+  background-color: $loading-dot-color-primary;
+}
+
+.dot:first-child {
+  background-color: $loading-dot-color-accent !important;
+  animation-delay: 0s;
+  margin-left: 10px;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+  margin-left: 4px;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+// Bounce animation
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.8);
+  }
+}
+
+// Message
 .tisa-loading-message {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--p-surface-700);
+  font-size: $loading-message-font-size;
+  font-weight: $loading-message-font-weight;
+  color: var(--p-surface-700, #374151);
   text-align: center;
   direction: rtl;
-}
-
-// Fade transition
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-to,
-.fade-leave-from {
-  opacity: 1;
+  transition: opacity 0.3s linear;
 }
 </style>

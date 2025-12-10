@@ -15,9 +15,7 @@ import { ref } from "vue";
 
 // Loading --------------------------------
 const loadingModel = ref(true)
-const loadingMessage = ref(1)
-
-setInterval(()=>{loadingMessage.value +=1}, 1000)
+const loadingMessage = ref(null)
 </script>
 
 <style lang="scss">
