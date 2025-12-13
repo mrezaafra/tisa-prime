@@ -22,8 +22,6 @@ import toast from '@/utility/plugins/toast';
 const t = i18n.global.t
 window.$t = t
 window.$toast = toast
-// Expose toast globally via app config
-app.config.globalProperties.$toast = toast
 // ----------
 const pinia = createPinia()
 pinia.use(persistedState)
@@ -36,6 +34,7 @@ app.use(pinia)
 app.use(router)
 app.use(i18n)
 app.use(framework.primeVue, framework.options)
-
 app.mount('#app')
 
+// Expose toast globally via app config
+app.config.globalProperties.$toast = toast
