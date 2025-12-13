@@ -14,7 +14,7 @@ import TisaLoading from "@/components/custom/loading/TisaLoading.vue";
 import { ref } from "vue";
 
 // Loading --------------------------------
-const loadingModel = ref(true)
+const loadingModel = ref(false)
 const loadingMessage = ref(null)
 </script>
 
