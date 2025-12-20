@@ -30,8 +30,8 @@ tisa-prime/
 │   │           └── fa.json           # Farsi translations
 │   ├── router/
 │   │   └── index.js                  # Vue Router configuration
-│   ├── store/
-│   │   └── mainStore.js              # Pinia store
+│   ├── stores/
+│   │   └── ....js              # Pinia store
 │   ├── assets/                       # Global assets
 │   ├── styles/
 │   │   └── global.scss               # Global SCSS styles
@@ -143,13 +143,6 @@ The application is configured for Right-to-Left (RTL) layout, optimized for Fars
 - Locale messages are lazy-loaded per page
 - Example: `src/pages/mainPage/locales/fa.json`
 - Usage in components with dynamic imports
-
-### State Management
-
-Pinia store (`src/store/mainStore.js`) provides:
-- Counter state management
-- Increment, decrement, and reset functions
-- Reactive state updates
 
 ### PrimeVue Configuration
 

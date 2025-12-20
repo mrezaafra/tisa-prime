@@ -1,5 +1,5 @@
 import router from "@/router";
-import { useUserStore } from "@/store/user";
+import { useUserStore } from "@/stores/user";
 import { RouteNames } from "@/enums/config/routeNames";
 
 

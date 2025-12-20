@@ -20,12 +20,13 @@ import {i18n} from "@/utility/plugins/i18n";
  * ---------------------------------------------------------------------------------------------------------------------
  */
 //----------------------------------------------------------------------------------------------------------------------
+const {t} = i18n.global
 const menuItems = [
     {
         path: '/admin/',
         name: Enums.RouteNames.MainPage,
         meta: {
-            title: i18n.global.t('mainPage.title'),
+            title: t('mainPage.title'),
             icon: "mdi-home-outline",
             type: "internal"
         },
