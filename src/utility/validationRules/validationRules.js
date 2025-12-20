@@ -1,7 +1,6 @@
 import {isShebaValid} from "@/utility/validationRules/partials/_sheba.js"
 //----------------------------------------------------------------------------------------------------------------------
-import {i18n} from "@/plugins/i18n";
-import {toast} from "vue-sonner";
+import {i18n} from "@/utility/plugins/i18n";
 import {isNullOrEmpty} from "@/utility/scripts/helper";
 
 const {t} = i18n.global

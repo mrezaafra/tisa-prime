@@ -3,7 +3,7 @@ export const InputTypes = Object.freeze({
     CascadeSelect: "CascadeSelect",
     Checkbox: "Checkbox",
     ColorPicker: "ColorPicker",
-    GregorianDatePicker: "GDatePicker",
+    DatePicker: "GDatePicker",
     Text: "Text",
     Number: "Number",
 })

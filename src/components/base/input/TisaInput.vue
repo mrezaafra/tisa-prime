@@ -12,6 +12,7 @@
 import { InputTypes } from "@/enums/ui/types.js";
 import { ref } from "vue";
 import { AutoComplete, CascadeSelect, Checkbox, ColorPicker, DatePicker, InputNumber, InputText } from "primevue";
+import PersianDatePicker from "@/components/base/input/partials/PersianDatePicker.vue";
 
 const model = defineModel()
 const props = defineProps({
@@ -40,14 +41,10 @@ switch (props.type) {
   case InputTypes.ColorPicker:
     component.value.type = ColorPicker
     break;
-  case InputTypes.GregorianDatePicker:
-    component.value.type = DatePicker
-    component.value.props.showIcon = true
-    component.value.props.iconDisplay = "input"
-    component.value.props.hourFormat = "24"
-    component.value.props.variant = "filled"
+  case InputTypes.DatePicker:
+    component.value.type = PersianDatePicker
     break;
-  case InputTypes.Text:
+    case InputTypes.Text:
     component.value.type = InputText
     break;
   case InputTypes.Number:
