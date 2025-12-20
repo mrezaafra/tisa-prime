@@ -4,7 +4,6 @@ export const InputTypes = Object.freeze({
     Checkbox: "Checkbox",
     ColorPicker: "ColorPicker",
     GregorianDatePicker: "GDatePicker",
-
     Text: "Text",
     Number: "Number",
 })

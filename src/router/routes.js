@@ -1,6 +1,7 @@
 import MainLayout from "@/layouts/main/MainLayout.vue";
 import Enums from "@/enums/enums.js";
-import {i18n} from "@/utility/plugins/i18n";
+import { i18n } from "@/utility/plugins/i18n";
+
 /** --------------------------------------------------------------------------------------------------------------------
  *    [
  *      {
@@ -23,7 +24,7 @@ import {i18n} from "@/utility/plugins/i18n";
 const {t} = i18n.global
 const menuItems = [
     {
-        path: '/admin/',
+        path: '/admin',
         name: Enums.RouteNames.MainPage,
         meta: {
             title: t('mainPage.title'),
@@ -36,10 +37,25 @@ const menuItems = [
 //----------------------------------------------------------------------------------------------------------------------
 const routes = [
     {
+        path: '/login',
+        name: Enums.RouteNames.Auth.LogIn,
+        meta: {
+            title: t('auth.login.title'),
+            showInMenu: false
+        },
+        component: () => import('@/pages/auth/LoginPage.vue')
+    },
+    {
         path: '',
         name: Enums.RouteNames.DefaultPage,
         component: MainLayout,
         children: menuItems,
+    },
+    // Catch-all route for 404
+    {
+        path: '/:pathMatch(.*)*',
+        name: Enums.RouteNames.Error.Page404,
+        redirect: '/'
     },
 ]
 //----------------------------------------------------------------------------------------------------------------------
