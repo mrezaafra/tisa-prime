@@ -103,32 +103,62 @@ export const isNullOrEmpty = (value) => {
   // otherwise
   return false
 }
+import toast from '@/utility/plugins/toast'
+import {sendRequest} from '@/utility/scripts/requestManagement'
+import {i18n} from '@/utility/plugins/i18n'
+
+const {t} = i18n.global
+
 export const downloadServerFile = async function (url, fileName = null) {
   try {
     const response = await sendRequest(url).getBlob()
     downloadBlob(response)
   } catch (error) {
-    toast.error(error.message ?? error)
+    const errorMessage = error?.message || error?.toString() || t('errors.fileDownloadError')
+    toast.error(errorMessage)
+    throw error
   }
 
   function downloadBlob(response) {
-    const link = document.createElement('a')
-    link.href = window.URL.createObjectURL(response.data)
-    link.setAttribute('download', _getFileName())
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    try {
+      const link = document.createElement('a')
+      link.href = window.URL.createObjectURL(response.data)
+      link.setAttribute('download', _getFileName())
+      document.body.appendChild(link)
+      link.click()
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(link.href)
+      }, 100)
+    } catch (error) {
+      console.error('Error downloading blob:', error)
+      toast.error(t('errors.fileDownloadError'))
+      throw error
+    }
 
     function _getFileName() {
-      let finalResult = ''
+      let finalResult = fileName || 'download'
 
-      let contentDisposition = response.headers.get('Content-Disposition')
-      const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-      if (match && match[1]) {
-        finalResult = fileName ?? match[1].replace(/['"]/g, '')
-      } else {
-        const urlParts = response.config.url.split('/')
-        finalResult = fileName ?? urlParts[urlParts.length - 1]
+      try {
+        const contentDisposition = response.headers?.get?.('Content-Disposition')
+        if (contentDisposition) {
+          const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+          if (match && match[1]) {
+            finalResult = fileName ?? decodeURIComponent(match[1].replace(/['"]/g, ''))
+          }
+        }
+      } catch (error) {
+        // Fallback to URL-based filename
+        try {
+          const urlParts = response.config?.url?.split('/') || []
+          if (urlParts.length > 0) {
+            finalResult = fileName ?? urlParts[urlParts.length - 1]
+          }
+        } catch {
+          // Use default filename
+        }
       }
 
       return finalResult

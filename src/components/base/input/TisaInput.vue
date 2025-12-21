@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { InputTypes } from "@/enums/ui/types.js";
+import { InputTypes } from "@/enums/partials/types.js";
 import { ref } from "vue";
 import { AutoComplete, CascadeSelect, Checkbox, ColorPicker, DatePicker, InputNumber, InputText } from "primevue";
 import PersianDatePicker from "@/components/base/input/partials/PersianDatePicker.vue";

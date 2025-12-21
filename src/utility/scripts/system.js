@@ -1,6 +1,6 @@
 import router from "@/router";
 import { useUserStore } from "@/stores/user";
-import { RouteNames } from "@/enums/config/routeNames";
+import { RouteNames } from "@/enums/partials/routeNames";
 
 
 // Copyright -----------------------------------------------------------------------------------------------------------

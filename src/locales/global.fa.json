@@ -9,5 +9,8 @@
       "subtitle": "برای ادامه وارد شوید",
       "button": "ورود (توسعه)"
     }
+  },
+  "loading": {
+    "fetchDataFrom": "در حال بارگذاری از {source}..."
   }
 }

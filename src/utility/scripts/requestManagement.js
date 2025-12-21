@@ -1,10 +1,11 @@
 import axios from 'axios'
-import {toast} from "vue-sonner"
 import {useUserStore} from "@/stores/user"
 import {handleAllSettledAnswer} from "@/utility/scripts/system"
 import {isNullOrEmpty, persianDateToGregorian} from "@/utility/scripts/helper"
 import Enums from "@/enums/enums"
 import moment from "jalali-moment"
+import toast from "@/utility/plugins/toast"
+import appConfig from "@/config/app"
 
 let loadingUrls = []
 /**
@@ -33,7 +34,7 @@ export let sendRequest = (url, options) => {
       const
         {
           page = 1,
-          itemsPerPage = Enums.Config.Table.ItemPerPage,
+          itemsPerPage = appConfig.table.itemsPerPage,
           totalCount: totalCount
         } = pageOption,
         filterString = createFilterString(),
@@ -58,20 +59,20 @@ export let sendRequest = (url, options) => {
         }
         let filter = ''
         switch (pageOption.search.type) {
-          case Enums.InputType.Text:
+          case Enums.InputTypes.Text:
             filter = `&filter=${pageOption.search.category}=*${pageOption.search.phrase}`
             break
-          case Enums.InputType.DropDown:
+          case 'DropDown':
             const
               _cat = pageOption.search.category,
               items = pageOption.search.phrase.map(item => `${_cat}=${item.id}`),
               orFilter = items.length > 1 ? `(${items.join('|')})` : items[0]
             filter = `&filter=${orFilter}`
             break
-          case Enums.InputType.DateRange:
+          case 'DateRange':
             filter = `&filter=${pageOption.search.category}>=${persianDateToGregorian(pageOption.search.phrase.from)},${pageOption.search.category}<${moment(persianDateToGregorian(pageOption.search.phrase.to)).add(1, 'days').format('YYYY-MM-DD')}`
             break
-          case Enums.InputType.DateTimeRange:
+          case 'DateTimeRange':
             filter = `&filter=${pageOption.search.category}>=${moment(persianDateToGregorian(pageOption.search.phrase.from, true)).format('YYYY-MM-DD HH:mm:00')},${pageOption.search.category}<=${moment(persianDateToGregorian(pageOption.search.phrase.to, true)).format('YYYY-MM-DD HH:mm:59')}`
             break
           default:
@@ -132,13 +133,21 @@ export let sendRequest = (url, options) => {
     if (window.loading) {
       let urlSource = null
       try {
-        urlSource = URL.parse(url).pathname
+        const urlObj = new URL(url, window.location.origin)
+        urlSource = urlObj.pathname
       } catch (error) {
-        urlSource = url
+        // If URL parsing fails, try to extract pathname manually
+        try {
+          const match = url.match(/\/[^?#]*/)
+          urlSource = match ? match[0] : url
+        } catch {
+          urlSource = url
+        }
       }
-      loading.show($t('loading.fetchDataFrom', {source: urlSource}))
+      const message = window.$t ? window.$t('loading.fetchDataFrom', {source: urlSource}) : `در حال بارگذاری از ${urlSource}...`
+      window.loading.show(message)
       if (loadingUrls.length === 0) {
-        loading.hide()
+        window.loading.hide()
       }
     }
   }
@@ -171,10 +180,12 @@ export let sendRequest = (url, options) => {
       }
       if (response.data?.status === false) {
         if (response.data?.message !== null) {
-          toast.error(response.data.message?.message ?? response.data.message)
-          return Promise.reject(response.data.message?.message ?? response.data.message)
+          const errorMessage = response.data.message?.message ?? response.data.message
+          toast.error(errorMessage)
+          return Promise.reject(errorMessage)
         }
-        return Promise.reject($t('errors.somethingWentWrong'))
+        const errorMsg = t('errors.somethingWentWrong')
+        return Promise.reject(errorMsg)
       }
       return response.data.data
     })

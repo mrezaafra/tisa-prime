@@ -36,10 +36,19 @@ router.beforeEach((to, from) => {
     return middleware(userStore, to, from)
 });
 
-router.onError(error => {
-    console.error(error)
-    loading.hide()
-    toast.error(t('errors.routeChange'))
+router.onError((error) => {
+    console.error('Router error:', error)
+    
+    // Hide loading if it exists
+    if (typeof window !== 'undefined' && window.loading) {
+        window.loading.hide()
+    }
+    
+    // Show error toast
+    const errorMessage = t('errors.routeChange')
+    if (typeof window !== 'undefined' && window.toast) {
+        window.toast.error(errorMessage)
+    }
 })
 
 export default router

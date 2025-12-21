@@ -1,9 +1,8 @@
 <template>
 
   <TisaInput
-      :type="Enums.UI.InputTypes.Number"
+      :type="Enums.InputTypes.Number"
       v-model="test"
-      v-validate="ValidationRules.MinValue(100)"
   />
 
 </template>
@@ -12,7 +11,6 @@
 import { ref } from "vue";
 import TisaInput from "@/components/base/input/TisaInput.vue";
 import Enums from "@/enums/enums.js";
-import { ValidationRules } from "@/utility/validationRules/validationRules.js";
 
 const test = ref()
 </script>
