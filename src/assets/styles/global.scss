@@ -20,3 +20,25 @@ body {
   font-family: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.rtl {
+  direction: rtl !important;
+}
+
+.rtl-right {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+.ltr {
+  direction: ltr !important;
+}
+
+.ltr-left {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.ltr-center {
+  direction: ltr !important;
+  text-align: center !important;
+}

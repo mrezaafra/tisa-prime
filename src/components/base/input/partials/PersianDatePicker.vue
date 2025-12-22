@@ -1,7 +1,10 @@
 <template>
   <DatePicker
       color="var(--p-primary-color)"
+      format="YYYY/MM/DD"
+      display-format="jYYYY/jMM/jDD"
       autoSubmit="true"
+      locale="fa,en"
   />
 </template>
 <script setup>

@@ -43,12 +43,14 @@ switch (props.type) {
     break;
   case InputTypes.DatePicker:
     component.value.type = PersianDatePicker
+    component.value.customClass = 'ltr-center'
     break;
     case InputTypes.Text:
     component.value.type = InputText
     break;
   case InputTypes.Number:
     component.value.type = InputNumber
+    component.value.customClass = 'ltr-left'
     break;
 
 

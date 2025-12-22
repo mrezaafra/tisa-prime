@@ -1,8 +1,34 @@
 <template>
 
+  Number:
   <TisaInput
       :type="Enums.InputTypes.Number"
+  />
+  DatePicker:
+  <TisaInput
+      :type="Enums.InputTypes.DatePicker"
       v-model="test"
+  />
+  {{test}}
+  ColorPicker:
+  <TisaInput
+      :type="Enums.InputTypes.ColorPicker"
+  />
+  Text:
+  <TisaInput
+      :type="Enums.InputTypes.Text"
+  />
+  AutoComplete:
+  <TisaInput
+      :type="Enums.InputTypes.AutoComplete"
+  />
+  CascadeSelect:
+  <TisaInput
+      :type="Enums.InputTypes.CascadeSelect"
+  />
+  Checkbox:
+  <TisaInput
+      :type="Enums.InputTypes.Checkbox"
   />
 
 </template>
