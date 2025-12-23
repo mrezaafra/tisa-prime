@@ -4,24 +4,24 @@
       {{ label }}
       <span v-if="required" class="tisa-input-required">*</span>
     </label>
-    
+
     <component
-      :id="inputId"
-      :is="component.type"
-      v-model="model"
-      :class="[component.customClass, errorMessage ? 'p-invalid' : '']"
-      v-bind="component.props"
-      :aria-describedby="errorMessage ? `${inputId}-error` : undefined"
-      :aria-invalid="errorMessage ? 'true' : 'false'"
-      @blur="validate"
-      @input="onInput"
-      fluid
-    />
-    
+        :id="inputId"
+        :is="component.type"
+        v-model="model"
+        :class="[component.customClass, errorMessage ? 'p-invalid' : '']"
+        v-bind="mergedProps"
+        :aria-describedby="errorMessage ? `${inputId}-error` : undefined"
+        :aria-invalid="errorMessage ? 'true' : 'false'"
+        @blur="validate"
+        @input="onInput"
+        fluid
+    ></component>
+
     <small v-if="errorMessage" :id="`${inputId}-error`" class="tisa-input-error">
       {{ errorMessage }}
     </small>
-    
+
     <small v-else-if="hint" class="tisa-input-hint">
       {{ hint }}
     </small>
@@ -30,11 +30,13 @@
 
 <script setup>
 import { InputTypes } from "@/enums/partials/types.js";
-import { ref, computed, watch, onMounted } from "vue";
-import { AutoComplete, CascadeSelect, Checkbox, ColorPicker, DatePicker, InputNumber, InputText } from "primevue";
+import { computed, ref, useAttrs, watch } from "vue";
+import { AutoComplete, CascadeSelect, Checkbox, ColorPicker, InputNumber, InputText, Password } from "primevue";
 import PersianDatePicker from "@/components/base/input/partials/PersianDatePicker.vue";
 
 const model = defineModel()
+const attrs = useAttrs()
+
 const props = defineProps({
   type: {
     type: String,
@@ -121,29 +123,51 @@ switch (props.type) {
   case InputTypes.Text:
     component.value.type = InputText
     break;
+  case InputTypes.Password:
+    component.value.type = Password
+    component.value.props.feedback = false
+    component.value.props.toggleMask = true
+    break;
   case InputTypes.Number:
     component.value.type = InputNumber
     component.value.customClass = 'ltr-left'
     break;
 }
 
-// Set component props
-component.value.props = {
-  placeholder: props.placeholder,
-  disabled: props.disabled,
-  readonly: props.readonly,
-  ...(props.password && props.type === InputTypes.Text ? { type: 'password' } : {}),
-  ...component.value.props
-}
+
+const mergedProps = computed(() => {
+  const baseProps = {
+    placeholder: props.placeholder,
+    disabled: props.disabled,
+    readonly: props.readonly,
+  }
+
+  const componentDefaults = component.value.props || {}
+
+  const directProps = {}
+
+  Object.keys(attrs).forEach(key => {
+    if (!['class', 'style', 'id'].includes(key) && !(key in props)) {
+      directProps[key] = attrs[key]
+    }
+  })
+
+  // Merge with priority: directProps > componentDefaults > baseProps
+  return {
+    ...baseProps,
+    ...componentDefaults,
+    ...directProps
+  }
+})
 
 // Validation function
 const validate = () => {
   if (!isDirty.value) {
     isDirty.value = true
   }
-  
+
   errorMessage.value = ''
-  
+
   if (props.rules && props.rules.length > 0) {
     for (const rule of props.rules) {
       if (typeof rule === 'function') {
@@ -155,7 +179,7 @@ const validate = () => {
       }
     }
   }
-  
+
   return true
 }
 
@@ -172,7 +196,7 @@ watch(() => props.rules, () => {
   if (isDirty.value) {
     validate()
   }
-}, { deep: true })
+}, {deep: true})
 
 // Expose validate method for parent form
 defineExpose({
@@ -185,27 +209,27 @@ defineExpose({
 <style scoped lang="scss">
 .tisa-input-wrapper {
   margin-bottom: 1rem;
-  
+
   .tisa-input-label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: var(--p-surface-700);
     font-size: 0.875rem;
-    
+
     .tisa-input-required {
       color: var(--p-danger-color);
       margin-right: 0.25rem;
     }
   }
-  
+
   .tisa-input-error {
     display: block;
     margin-top: 0.25rem;
     color: var(--p-danger-color);
     font-size: 0.75rem;
   }
-  
+
   .tisa-input-hint {
     display: block;
     margin-top: 0.25rem;

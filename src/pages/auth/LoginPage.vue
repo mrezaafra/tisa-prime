@@ -8,31 +8,38 @@
 
       <form @submit.prevent="handleLogin" class="tisa-login-form">
         <TisaInput
-          ref="mobileInputRef"
-          v-model="loginForm.mobile"
-          :type="Enums.InputTypes.Text"
-          :label="$t('auth.login.mobile')"
-          :placeholder="'09123456789'"
-          :rules="[ValidationRules.Required, ValidationRules.Mobile]"
-          required
-        />
+            ref="mobileInputRef"
+            v-model="loginForm.mobile"
+            :type="Enums.InputTypes.Number"
+            :label="$t('auth.login.mobile')"
+            :placeholder="'09123456789'"
+            :rules="[ValidationRules.Required, ValidationRules.Mobile]"
+            required
+            buttonLayout="horizontal" :step="0.25" mode="currency" currency="EUR" fluid
+        >
+          <template #incrementbuttonicon>
+            <span class="pi pi-plus"/>
+          </template>
+          <template #decrementbuttonicon>
+            <span class="pi pi-minus"/>
+          </template>
+        </TisaInput>
 
         <TisaInput
-          ref="passwordInputRef"
-          v-model="loginForm.password"
-          :type="Enums.InputTypes.Text"
-          :label="$t('auth.login.password')"
-          :placeholder="$t('auth.login.password')"
-          :rules="[ValidationRules.Required, ValidationRules.Password]"
-          required
-          password
+            ref="passwordInputRef"
+            v-model="loginForm.password"
+            :type="Enums.InputTypes.Password"
+            :label="$t('auth.login.password')"
+            :placeholder="$t('auth.login.password')"
+            :rules="[ValidationRules.Required, ValidationRules.Password]"
+            required
         />
 
         <div class="tisa-login-options">
           <Checkbox
-            v-model="loginForm.rememberMe"
-            :binary="true"
-            :inputId="'rememberMe'"
+              v-model="loginForm.rememberMe"
+              :binary="true"
+              :inputId="'rememberMe'"
           />
           <label :for="'rememberMe'" class="tisa-checkbox-label">
             {{ $t('auth.login.rememberMe') }}
@@ -40,10 +47,9 @@
         </div>
 
         <Button
-          type="submit"
-          :label="$t('auth.login.button')"
-          :loading="isLoading"
-          class="w-full tisa-login-button"
+            type="submit"
+            :label="$t('auth.login.button')"
+            class="w-full tisa-login-button"
         />
       </form>
     </div>
@@ -74,8 +80,6 @@ const loginForm = ref({
 const mobileInputRef = ref(null)
 const passwordInputRef = ref(null)
 
-// Loading state
-const isLoading = ref(false)
 
 // Form refs object for validateForm
 const loginFormRef = ref({
@@ -90,33 +94,29 @@ const handleLogin = async () => {
     return
   }
 
-  isLoading.value = true
-
   try {
     // TODO: Replace with actual login API call
     // const response = await sendRequest('/api/auth/login').post({
     //   mobile: loginForm.value.mobile,
     //   password: loginForm.value.password
     // })
-    
+
     // For development: Set a dummy token
     await userStore.initStore('dummy-token-for-development')
-    
+
     // If remember me is checked, store credentials (in production, use secure storage)
     if (loginForm.value.rememberMe) {
       // Store logic here if needed
     }
-    
+
     // Redirect to intended page or home
     const redirectPath = router.currentRoute.value.query.r || '/'
     router.push(redirectPath)
-    
-    toast.success('ورود با موفقیت انجام شد')
+
   } catch (error) {
-    console.error('Login error:', error)
-    toast.error(error?.message || 'خطا در ورود به سیستم')
-  } finally {
-    isLoading.value = false
+    if (error?.message) {
+      toast.error(error.message)
+    }
   }
 }
 </script>
@@ -138,31 +138,32 @@ const handleLogin = async () => {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   max-width: 420px;
   width: 100%;
-  
+
   .tisa-login-header {
     text-align: center;
     margin-bottom: 2rem;
-    
+
     h1 {
       margin-bottom: 0.5rem;
       color: var(--p-surface-900);
       font-size: 1.75rem;
       font-weight: 600;
     }
-    
+
     p {
       color: var(--p-surface-600);
       font-size: 0.875rem;
     }
+
   }
-  
+
   .tisa-login-form {
     .tisa-login-options {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       margin-bottom: 1.5rem;
-      
+
       .tisa-checkbox-label {
         cursor: pointer;
         color: var(--p-surface-700);
@@ -170,7 +171,7 @@ const handleLogin = async () => {
         user-select: none;
       }
     }
-    
+
     .tisa-login-button {
       margin-top: 0.5rem;
       padding: 0.75rem;
@@ -185,10 +186,10 @@ const handleLogin = async () => {
   .tisa-login-page {
     padding: 1rem;
   }
-  
+
   .tisa-login-container {
     padding: 1.5rem;
-    
+
     .tisa-login-header {
       h1 {
         font-size: 1.5rem;

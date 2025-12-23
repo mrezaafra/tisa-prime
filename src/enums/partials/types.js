@@ -6,4 +6,5 @@ export const InputTypes = Object.freeze({
     DatePicker: "GDatePicker",
     Text: "Text",
     Number: "Number",
+    Password: "Password",
 })

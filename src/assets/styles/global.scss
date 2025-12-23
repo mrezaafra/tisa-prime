@@ -16,6 +16,10 @@ body {
   min-height: 100vh;
 }
 
+input::placeholder {
+  color: var(--p-surface-300) !important;
+}
+
 .p-component {
   font-family: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
