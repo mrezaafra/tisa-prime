@@ -15,15 +15,7 @@
             :placeholder="'09123456789'"
             :rules="[ValidationRules.Required, ValidationRules.Mobile]"
             required
-            buttonLayout="horizontal" :step="0.25" mode="currency" currency="EUR" fluid
-        >
-          <template #incrementbuttonicon>
-            <span class="pi pi-plus"/>
-          </template>
-          <template #decrementbuttonicon>
-            <span class="pi pi-minus"/>
-          </template>
-        </TisaInput>
+        />
 
         <TisaInput
             ref="passwordInputRef"
