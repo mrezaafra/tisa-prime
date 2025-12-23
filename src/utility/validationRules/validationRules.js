@@ -128,13 +128,22 @@ export const ValidationRules = {
     }
     value += ''
     return +charLength === value.length || t('errors.exactChar', {value: charLength, count: value.length})
+  },
+  Mobile: value => {
+    if (isNullOrEmpty(value)) {
+      return
+    }
+    // Iranian mobile number validation: 09xxxxxxxxx or +989xxxxxxxxx
+    const pattern = /^(0|98|\+98)?9\d{9}$/
+    const cleaned = value.toString().replace(/[\s\-\(\)]/g, '')
+    return pattern.test(cleaned) || t('errors.type.mobile')
+  },
+  Password: value => {
+    if (isNullOrEmpty(value)) {
+      return
+    }
+    // At least 8 characters, at least one letter and one number
+    const pattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/
+    return pattern.test(value) || t('errors.passwordPolicy')
   }
-}
-// validateForm -----------------------------
-export const validateForm = async function (formRef) {
-  const {valid} = await formRef.value.validate()
-  if (!valid) {
-    toast.error($t('errors.validateInput'))
-  }
-  return valid;
 }

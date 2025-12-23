@@ -12,11 +12,18 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import TisaLoading from "@/components/custom/loading/TisaLoading.vue";
-import { ref } from "vue";
+import { ref, getCurrentInstance } from "vue";
 import toast from "@/utility/plugins/toast.js";
 import { useI18n } from '@/composables/useI18n'
+import { useToast } from 'primevue/usetoast'
 
 const { t } = useI18n()
+const toastInstance = useToast()
+
+// Expose toast instance globally for use in utility functions
+if (typeof window !== 'undefined') {
+    window.__primevue_toast_instance__ = toastInstance
+}
 
 /**
  * Global loading state management

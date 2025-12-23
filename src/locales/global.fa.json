@@ -7,8 +7,14 @@
     "login": {
       "title": "ورود",
       "subtitle": "برای ادامه وارد شوید",
-      "button": "ورود (توسعه)"
+      "button": "ورود",
+      "mobile": "شماره موبایل",
+      "password": "رمز عبور",
+      "rememberMe": "مرا به خاطر بسپار"
     }
+  },
+  "global": {
+    "percent": "درصد"
   },
   "loading": {
     "fetchDataFrom": "در حال بارگذاری از {source}..."

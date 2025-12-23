@@ -1,4 +1,8 @@
 import moment from "jalali-moment";
+import toast from '@/utility/plugins/toast'
+import { i18n } from '@/utility/plugins/i18n'
+
+const { t } = i18n.global
 
 export const digitsToEnglish = function (str) {
   if (str == null || typeof str === 'number') {
@@ -103,11 +107,7 @@ export const isNullOrEmpty = (value) => {
   // otherwise
   return false
 }
-import toast from '@/utility/plugins/toast'
 import {sendRequest} from '@/utility/scripts/requestManagement'
-import {i18n} from '@/utility/plugins/i18n'
-
-const {t} = i18n.global
 
 export const downloadServerFile = async function (url, fileName = null) {
   try {
@@ -126,7 +126,7 @@ export const downloadServerFile = async function (url, fileName = null) {
       link.setAttribute('download', _getFileName())
       document.body.appendChild(link)
       link.click()
-      
+
       // Cleanup
       setTimeout(() => {
         document.body.removeChild(link)
@@ -313,4 +313,41 @@ export const updateTableOptionHelper = (option, tableOption, sortOptions, makeTa
 
   tableOption.value = {...option, sortBy: sortOptions};
   makeTableData(tableOption.value)
+}
+
+export const validateForm = async function (formRefs) {
+  if (!formRefs) {
+    console.error('validateForm: formRefs is required')
+    return false
+  }
+
+  let isValid = true
+  // Handle both ref objects and plain objects
+  const refs = formRefs.value || formRefs
+
+  // Validate all inputs
+  for (const key in refs) {
+    const inputRef = refs[key]
+    // Handle both ref.value and direct ref
+    const actualRef = inputRef?.value || inputRef
+
+    if (actualRef && typeof actualRef.validate === 'function') {
+      const inputValid = actualRef.validate()
+      if (!inputValid) {
+        isValid = false
+      }
+    }
+  }
+
+  if (!isValid) {
+    // Use window.toast which is set up globally in App.vue
+    if (typeof window !== 'undefined' && window.toast) {
+      window.toast.error(t('errors.validateInput'))
+    } else {
+      // Fallback to imported toast
+      toast.error(t('errors.validateInput'))
+    }
+  }
+
+  return isValid
 }
