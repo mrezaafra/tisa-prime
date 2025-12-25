@@ -6,6 +6,9 @@ export const appConfig = {
     },
     table: {
         itemsPerPage: Number(import.meta.env.VITE_TABLE_ITEMS_PER_PAGE) || 10,
+    },
+    toast: {
+        time: 3000, //ms
     }
 }
 
