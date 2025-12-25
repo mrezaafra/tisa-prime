@@ -315,36 +315,55 @@ export const updateTableOptionHelper = (option, tableOption, sortOptions, makeTa
   makeTableData(tableOption.value)
 }
 
-export const validateForm = async function (formRefs) {
-  if (!formRefs) {
-    console.error('validateForm: formRefs is required')
+export const validateForm = async function (formElementOrRef) {
+  let formElement = null
+
+  if (!formElementOrRef) {
+    console.error('validateForm: form element or ref is required')
+    return false
+  }
+
+  if (formElementOrRef.target || formElementOrRef.currentTarget) {
+    const event = formElementOrRef
+    formElement = event.currentTarget?.tagName === 'FORM' 
+      ? event.currentTarget 
+      : event.target?.closest('form')
+  }
+  else if (formElementOrRef.value && formElementOrRef.value.tagName === 'FORM') {
+    formElement = formElementOrRef.value
+  }
+  else if (formElementOrRef.tagName === 'FORM') {
+    formElement = formElementOrRef
+  }
+  else if (formElementOrRef.value) {
+    formElement = formElementOrRef.value.tagName === 'FORM' 
+      ? formElementOrRef.value 
+      : formElementOrRef.value.closest?.('form')
+  }
+
+  if (!formElement || formElement.tagName !== 'FORM') {
+    console.error('validateForm: Could not find form element')
     return false
   }
 
   let isValid = true
-  // Handle both ref objects and plain objects
-  const refs = formRefs.value || formRefs
-
-  // Validate all inputs
-  for (const key in refs) {
-    const inputRef = refs[key]
-    // Handle both ref.value and direct ref
-    const actualRef = inputRef?.value || inputRef
-
-    if (actualRef && typeof actualRef.validate === 'function') {
-      const inputValid = actualRef.validate()
+  const tisaInputWrappers = formElement.querySelectorAll('[data-tisa-input]')
+  
+  tisaInputWrappers.forEach(wrapper => {
+    const inputInstance = wrapper.__tisaInputInstance
+    
+    if (inputInstance && typeof inputInstance.validate === 'function') {
+      const inputValid = inputInstance.validate()
       if (!inputValid) {
         isValid = false
       }
     }
-  }
+  })
 
   if (!isValid) {
-    // Use window.toast which is set up globally in App.vue
     if (typeof window !== 'undefined' && window.toast) {
       window.toast.error(t('errors.validateInput'))
     } else {
-      // Fallback to imported toast
       toast.error(t('errors.validateInput'))
     }
   }

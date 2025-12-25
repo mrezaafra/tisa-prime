@@ -1,5 +1,5 @@
 <template>
-  <div class="tisa-input-wrapper">
+  <div class="tisa-input-wrapper" data-tisa-input ref="wrapperRef">
     <label
         v-if="component.props.label"
         class="tisa-input-label"
@@ -42,7 +42,7 @@
 
 <script setup>
 import { InputTypes } from "@/enums/partials/types.js";
-import { computed, ref, useAttrs, watch } from "vue";
+import { computed, onMounted, ref, useAttrs, watch } from "vue";
 import {
   AutoComplete,
   CascadeSelect,
@@ -51,6 +51,7 @@ import {
   InputMask,
   InputNumber,
   InputText,
+  Message,
   Password
 } from "primevue";
 import PersianDatePicker from "@/components/base/input/partials/PersianDatePicker.vue";
@@ -112,6 +113,7 @@ const inputId = computed(() => `tisa-input-${++inputIdCounter}`)
 const errorMessage = ref('')
 const isDirty = ref(false)
 const isNumberStringType = computed(() => props.type === InputTypes.NumberString)
+const wrapperRef = ref(null)
 
 // -------------------------
 // Component Configuration
@@ -282,6 +284,19 @@ watch(() => props.rules, () => {
     validate()
   }
 }, {deep: true})
+
+// -------------------------
+// Component Registration
+// -------------------------
+onMounted(() => {
+  if (wrapperRef.value) {
+    wrapperRef.value.__tisaInputInstance = {
+      validate,
+      isValid: computed(() => !errorMessage.value),
+      errorMessage: computed(() => errorMessage.value)
+    }
+  }
+})
 
 // -------------------------
 // Expose

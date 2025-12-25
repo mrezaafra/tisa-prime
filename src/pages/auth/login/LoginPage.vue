@@ -5,16 +5,14 @@
         <h1>{{ $t('login.title') }}</h1>
       </div>
 
-      <form @submit.prevent="handleLogin" class="tisa-login-form">
+      <form ref="loginFormRef" @submit.prevent="handleLogin" class="tisa-login-form">
         <TisaInput
-            ref="mobileInputRef"
             v-model="loginForm.mobile"
             :type="Enums.InputTypes.Mobile"
             :rules="[ValidationRules.Required, ValidationRules.Mobile]"
             required
         />
         <TisaInput
-            ref="passwordInputRef"
             v-model="loginForm.password"
             :type="Enums.InputTypes.Password"
             :label="$t('global.password')"
@@ -63,21 +61,13 @@ const loginForm = ref({
   rememberMe: false
 })
 
-// Input refs for validation
-const mobileInputRef = ref(null)
-const passwordInputRef = ref(null)
-
-
-// Form refs object for validateForm
-const loginFormRef = ref({
-  mobile: mobileInputRef,
-  password: passwordInputRef
-})
+// Form ref for automatic validation
+const loginFormRef = ref(null)
 
 // Handle login
-const handleLogin = async () => {
-  // Validate form
-  if (!await validateForm(loginFormRef)) {
+const handleLogin = async (event) => {
+  // Validate form - pass event to automatically find form element
+  if (!await validateForm(event || loginFormRef)) {
     return
   }
 
