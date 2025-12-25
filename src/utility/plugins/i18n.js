@@ -17,7 +17,7 @@ for (const path in sources) {
 }
 
 export const i18n = createI18n({
-  locale: 'fa',
+    locale: 'fa',
   fallbackLocale: 'fa',
   legacy: false,
   globalInjection: true,
