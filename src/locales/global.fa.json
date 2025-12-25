@@ -3,20 +3,12 @@
   "mainPage": {
     "title": "صفحه اصلی"
   },
-  "auth": {
-    "login": {
-      "title": "ورود",
-      "subtitle": "برای ادامه وارد شوید",
-      "button": "ورود",
-      "mobile": "شماره موبایل",
-      "password": "رمز عبور",
-      "rememberMe": "مرا به خاطر بسپار"
-    }
-  },
   "global": {
-    "percent": "درصد"
+    "percent": "درصد",
+    "mobile": "شماره همراه",
+    "password": "رمز عبور"
   },
   "loading": {
-    "fetchDataFrom": "در حال بارگذاری از {source}..."
+    "fetchDataFrom": "در حال برقراری ارتباط با {source}..."
   }
 }

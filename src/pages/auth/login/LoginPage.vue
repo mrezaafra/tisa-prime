@@ -2,17 +2,14 @@
   <div class="tisa-login-page">
     <div class="tisa-login-container">
       <div class="tisa-login-header">
-        <h1>{{ $t('auth.login.title') }}</h1>
-        <p>{{ $t('auth.login.subtitle') }}</p>
+        <h1>{{ $t('login.title') }}</h1>
       </div>
 
       <form @submit.prevent="handleLogin" class="tisa-login-form">
         <TisaInput
             ref="mobileInputRef"
             v-model="loginForm.mobile"
-            :type="Enums.InputTypes.Number"
-            :label="$t('auth.login.mobile')"
-            :placeholder="'09123456789'"
+            :type="Enums.InputTypes.Mobile"
             :rules="[ValidationRules.Required, ValidationRules.Mobile]"
             required
         />
@@ -21,8 +18,7 @@
             ref="passwordInputRef"
             v-model="loginForm.password"
             :type="Enums.InputTypes.Password"
-            :label="$t('auth.login.password')"
-            :placeholder="$t('auth.login.password')"
+            :label="$t('global.password')"
             :rules="[ValidationRules.Required, ValidationRules.Password]"
             required
         />
@@ -34,13 +30,13 @@
               :inputId="'rememberMe'"
           />
           <label :for="'rememberMe'" class="tisa-checkbox-label">
-            {{ $t('auth.login.rememberMe') }}
+            {{ $t('login.rememberMe') }}
           </label>
         </div>
 
         <Button
             type="submit"
-            :label="$t('auth.login.button')"
+            :label="$t('login.submit')"
             class="w-full tisa-login-button"
         />
       </form>
@@ -120,14 +116,15 @@ const handleLogin = async () => {
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, var(--p-primary-50) 0%, var(--p-surface-0) 100%);
+  background: linear-gradient(180deg, var(--p-primary-50) 0%, var(--p-surface-0) 100%);
 }
 
 .tisa-login-container {
   background: var(--p-surface-0);
   padding: 2.5rem;
-  border-radius: var(--p-border-radius-lg);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: var(--p-primary-200) 1px solid;
+  border-radius: var(--p-border-radius-sm);
+  box-shadow: 0 10px 30px var(--p-primary-100);
   max-width: 420px;
   width: 100%;
 

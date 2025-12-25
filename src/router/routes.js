@@ -43,7 +43,7 @@ const routes = [
             title: t('auth.login.title'),
             showInMenu: false
         },
-        component: () => import('@/pages/auth/LoginPage.vue')
+        component: () => import('@/pages/auth/login/LoginPage.vue')
     },
     {
         path: '',

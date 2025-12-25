@@ -7,4 +7,6 @@ export const InputTypes = Object.freeze({
     Text: "Text",
     Number: "Number",
     Password: "Password",
+    NumberString:"NumberString",
+    Mobile:"Mobile"
 })
