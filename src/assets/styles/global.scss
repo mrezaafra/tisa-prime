@@ -46,3 +46,7 @@ input::placeholder {
   direction: ltr !important;
   text-align: center !important;
 }
+
+input[invalid] {
+  border-color: var(--p-danger-color) !important;
+}

@@ -13,7 +13,6 @@
             :rules="[ValidationRules.Required, ValidationRules.Mobile]"
             required
         />
-
         <TisaInput
             ref="passwordInputRef"
             v-model="loginForm.password"
@@ -22,7 +21,6 @@
             :rules="[ValidationRules.Required, ValidationRules.Password]"
             required
         />
-
         <div class="tisa-login-options">
           <Checkbox
               v-model="loginForm.rememberMe"
@@ -38,6 +36,7 @@
             type="submit"
             :label="$t('login.submit')"
             class="w-full tisa-login-button"
+            fluid
         />
       </form>
     </div>

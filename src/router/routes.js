@@ -40,7 +40,7 @@ const routes = [
         path: '/login',
         name: Enums.RouteNames.Auth.LogIn,
         meta: {
-            title: t('auth.login.title'),
+            title: t('login.title'),
             showInMenu: false
         },
         component: () => import('@/pages/auth/login/LoginPage.vue')

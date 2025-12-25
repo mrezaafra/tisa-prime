@@ -1,7 +1,10 @@
 <template>
   <div class="tisa-input-wrapper">
-    <label v-if="component.props.label" class="tisa-input-label" :for="inputId">
-      <span> {{ component.props.label }}</span>
+    <label
+        v-if="component.props.label"
+        class="tisa-input-label"
+        :for="inputId">
+      <span>{{ component.props.label }}</span>
       <span v-if="required" class="tisa-input-required">
         <i class="pi pi-asterisk"></i>
       </span>
@@ -20,13 +23,20 @@
         @paste="onPaste"
         fluid
     />
-    <small v-if="errorMessage" :id="`${inputId}-error`" class="tisa-input-error">
+    <Message
+        v-if="errorMessage"
+        severity="error"
+        size="small"
+        variant="simple">
       {{ errorMessage }}
-    </small>
-    <small v-else-if="hint" class="tisa-input-hint">
+    </Message>
+    <Message
+        v-else-if="hint"
+        severity="secondary"
+        size="small"
+        variant="simple">
       {{ hint }}
-    </small>
-
+    </Message>
   </div>
 </template>
 
@@ -46,10 +56,16 @@ import {
 import PersianDatePicker from "@/components/base/input/partials/PersianDatePicker.vue";
 import { i18n } from "@/utility/plugins/i18n.js";
 
+// -------------------------
+// Imports & Setup
+// -------------------------
 const {t} = i18n.global
 const model = defineModel()
 const attrs = useAttrs()
 
+// -------------------------
+// Props & Emits
+// -------------------------
 const props = defineProps({
   type: {
     type: String,
@@ -71,87 +87,78 @@ const props = defineProps({
   required: {
     type: Boolean,
     default: false
-  },
-  suffix: {
-    type: String,
-    default: ''
-  },
-  prefix: {
-    type: String,
-    default: ''
-  },
-  placeholder: {
-    type: String,
-    default: ''
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  password: {
-    type: Boolean,
-    default: false
   }
 })
 
 const emit = defineEmits(['update:modelValue', 'blur', 'input'])
 
-// Generate unique ID for input
-const inputId = computed(() => `tisa-input-${Math.random().toString(36).substr(2, 9)}`)
+// -------------------------
+// Constants
+// -------------------------
+let inputIdCounter = 0
+const ALLOWED_KEYS = new Set([
+  'Backspace', 'Delete', 'Tab', 'Escape', 'Enter',
+  'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+  'Home', 'End'
+])
+const NUMERIC_REGEX = /^\d$/
+const NON_DIGIT_REGEX = /\D/g
+const EXCLUDED_ATTRS = new Set(['class', 'style', 'id'])
 
-// Error message state
+// -------------------------
+// State
+// -------------------------
+const inputId = computed(() => `tisa-input-${++inputIdCounter}`)
 const errorMessage = ref('')
 const isDirty = ref(false)
+const isNumberStringType = computed(() => props.type === InputTypes.NumberString)
 
-// Component mapping
+// -------------------------
+// Component Configuration
+// -------------------------
 const component = ref({
   customClass: '',
   props: {
-    label: props.label,
+    label: props.label
   },
   events: {},
   type: null
 })
 
-// Initialize component type
 switch (props.type) {
   case InputTypes.AutoComplete:
     component.value.type = AutoComplete
-    break;
+    break
   case InputTypes.CascadeSelect:
     component.value.type = CascadeSelect
-    break;
+    break
   case InputTypes.Checkbox:
     component.value.type = Checkbox
-    break;
+    break
   case InputTypes.ColorPicker:
     component.value.type = ColorPicker
-    break;
+    break
   case InputTypes.DatePicker:
     component.value.type = PersianDatePicker
     component.value.customClass = 'ltr-center'
-    break;
+    break
   case InputTypes.Text:
     component.value.type = InputText
-    break;
+    break
   case InputTypes.Password:
     component.value.type = Password
     component.value.props.feedback = false
     component.value.props.toggleMask = true
-    break;
+    break
   case InputTypes.Number:
     component.value.type = InputNumber
     component.value.customClass = 'ltr-left'
-    break;
+    break
   case InputTypes.NumberString:
     component.value.type = InputText
     component.value.customClass = 'ltr-left'
     component.value.props.inputmode = 'numeric'
-    break;
+    break
   case InputTypes.Mobile:
     component.value.type = InputMask
     component.value.customClass = 'ltr-left'
@@ -161,36 +168,36 @@ switch (props.type) {
     component.value.props.autoClear = false
     component.value.props.unmask = false
     component.value.props.label = t("global.mobile")
-    break;
+    break
 }
 
-
+// -------------------------
+// Computed Properties
+// -------------------------
 const mergedProps = computed(() => {
-  const baseProps = {
-    placeholder: props.placeholder,
-    disabled: props.disabled,
-    readonly: props.readonly,
-  }
-
+  const baseProps = {...props}
   const componentDefaults = component.value.props || {}
-
   const directProps = {}
 
-  Object.keys(attrs).forEach(key => {
-    if (!['class', 'style', 'id'].includes(key) && !(key in props)) {
+  for (const key in attrs) {
+    if (!EXCLUDED_ATTRS.has(key) && !(key in props)) {
       directProps[key] = attrs[key]
     }
-  })
+  }
 
-  // Merge with priority: directProps > componentDefaults > baseProps
+  const invalidProp = errorMessage.value ? {invalid: true} : {}
+
   return {
     ...baseProps,
     ...componentDefaults,
-    ...directProps
+    ...directProps,
+    ...invalidProp
   }
 })
 
-// Validation function
+// -------------------------
+// Validation
+// -------------------------
 const validate = () => {
   if (!isDirty.value) {
     isDirty.value = true
@@ -198,14 +205,16 @@ const validate = () => {
 
   errorMessage.value = ''
 
-  if (props.rules && props.rules.length > 0) {
-    for (const rule of props.rules) {
-      if (typeof rule === 'function') {
-        const result = rule(model.value)
-        if (result !== true) {
-          errorMessage.value = result || ''
-          return false
-        }
+  if (!props.rules?.length) {
+    return true
+  }
+
+  for (const rule of props.rules) {
+    if (typeof rule === 'function') {
+      const result = rule(model.value)
+      if (result !== true) {
+        errorMessage.value = result || ''
+        return false
       }
     }
   }
@@ -213,67 +222,46 @@ const validate = () => {
   return true
 }
 
-// Keydown handler to prevent non-numeric input for NumberString
+// -------------------------
+// Event Handlers
+// -------------------------
 const onKeyDown = (event) => {
-  // For NumberString type, only allow numeric keys and control keys
-  if (props.type === InputTypes.NumberString) {
-    const key = event.key
-    // Allow: numbers (0-9), backspace, delete, tab, escape, enter, arrow keys, home, end
-    const allowedKeys = [
-      'Backspace', 'Delete', 'Tab', 'Escape', 'Enter',
-      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
-      'Home', 'End'
-    ]
+  if (!isNumberStringType.value) return
 
-    // Allow control keys (Ctrl, Alt, Meta)
-    if (event.ctrlKey || event.altKey || event.metaKey) {
-      return true
-    }
+  const {key, ctrlKey, altKey, metaKey} = event
 
-    // Allow allowed keys
-    if (allowedKeys.includes(key)) {
-      return true
-    }
+  if (ctrlKey || altKey || metaKey) return
+  if (ALLOWED_KEYS.has(key)) return
+  if (NUMERIC_REGEX.test(key)) return
 
-    // Allow numbers
-    if (/^\d$/.test(key)) {
-      return true
-    }
-
-    // Prevent all other keys
-    event.preventDefault()
-    return false
-  }
+  event.preventDefault()
 }
 
-// Paste handler to filter non-numeric characters
 const onPaste = (event) => {
-  if (props.type === InputTypes.NumberString) {
-    event.preventDefault()
-    const pastedText = (event.clipboardData || window.clipboardData).getData('text')
-    // Extract only numeric characters from pasted text
-    const numericValue = pastedText.replace(/\D/g, '')
-    if (numericValue) {
-      // Get current input value and insert numeric characters
-      const currentValue = String(model.value || '')
-      const inputElement = event.target
-      const start = inputElement.selectionStart || 0
-      const end = inputElement.selectionEnd || 0
-      const newValue = currentValue.slice(0, start) + numericValue + currentValue.slice(end)
-      model.value = newValue.replace(/\D/g, '')
-    }
-  }
+  if (!isNumberStringType.value) return
+
+  event.preventDefault()
+  const clipboardData = event.clipboardData || window.clipboardData
+  const pastedText = clipboardData.getData('text')
+  const numericValue = pastedText.replace(NON_DIGIT_REGEX, '')
+
+  if (!numericValue) return
+
+  const inputElement = event.target
+  const currentValue = String(model.value || '')
+  const start = inputElement.selectionStart || 0
+  const end = inputElement.selectionEnd || 0
+  const newValue = (currentValue.slice(0, start) + numericValue + currentValue.slice(end))
+      .replace(NON_DIGIT_REGEX, '')
+
+  model.value = newValue
 }
 
-// Input handler
 const onInput = (event) => {
-  // For NumberString type, filter out non-numeric characters
-  if (props.type === InputTypes.NumberString && model.value !== null && model.value !== undefined) {
-    // Remove all non-numeric characters
-    const numericValue = String(model.value).replace(/\D/g, '')
+  if (isNumberStringType.value && model.value != null) {
+    const numericValue = String(model.value).replace(NON_DIGIT_REGEX, '')
     if (numericValue !== String(model.value)) {
       model.value = numericValue
-      // Update the input element's value directly
       if (event?.target) {
         event.target.value = numericValue
       }
@@ -286,14 +274,18 @@ const onInput = (event) => {
   }
 }
 
-// Watch for external validation
+// -------------------------
+// Watchers
+// -------------------------
 watch(() => props.rules, () => {
   if (isDirty.value) {
     validate()
   }
 }, {deep: true})
 
-// Expose validate method for parent form
+// -------------------------
+// Expose
+// -------------------------
 defineExpose({
   validate,
   isValid: computed(() => !errorMessage.value),
@@ -307,8 +299,7 @@ defineExpose({
 
   .tisa-input-label {
     display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+    margin-bottom: 2px;
     color: var(--p-surface-700);
     font-size: 0.875rem;
 
@@ -320,35 +311,10 @@ defineExpose({
         font-size: 0.5rem;
       }
     }
+
+    span {
+      vertical-align: middle;
+    }
   }
-
-  .tisa-input-label span {
-    vertical-align: middle;
-  }
-
-  .tisa-input-error {
-    display: block;
-    margin-top: 0.25rem;
-    color: var(--p-danger-color);
-    font-size: 0.75rem;
-  }
-
-  .tisa-input-hint {
-    display: block;
-    margin-top: 0.25rem;
-    color: var(--p-surface-500);
-    font-size: 0.75rem;
-  }
-}
-
-// LTR classes for specific input types
-:deep(.ltr-center) {
-  direction: ltr;
-  text-align: center;
-}
-
-:deep(.ltr-left) {
-  direction: ltr;
-  text-align: left;
 }
 </style>
