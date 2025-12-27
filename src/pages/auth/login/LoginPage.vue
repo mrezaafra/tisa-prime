@@ -16,7 +16,7 @@
             v-model="loginForm.password"
             :type="Enums.InputTypes.Password"
             :label="$t('global.password')"
-            :rules="[ValidationRules.Required, ValidationRules.Password]"
+            :rules="[ValidationRules.Required]"
             required
         />
         <div class="tisa-login-options">
@@ -45,14 +45,17 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { sendRequest } from '@/composables/sendRequest'
 import TisaInput from '@/components/base/input/TisaInput.vue'
 import Enums from '@/enums/enums.js'
 import { ValidationRules } from '@/utility/validationRules/validationRules.js'
 import { validateForm } from '@/utility/scripts/helper.js'
 import toast from '@/utility/plugins/toast.js'
+import appConfig from "@/config/app.js";
 
 const router = useRouter()
 const userStore = useUserStore()
+
 
 // Form state
 const loginForm = ref({
@@ -72,12 +75,10 @@ const handleLogin = async (event) => {
   }
 
   try {
-    // TODO: Replace with actual login API call
-    // const response = await sendRequest('/api/auth/login').post({
-    //   mobile: loginForm.value.mobile,
-    //   password: loginForm.value.password
-    // })
-
+    const response = await sendRequest(`${appConfig.url.accessManagement}/login`).post({
+      mobile: loginForm.value.mobile,
+      password: loginForm.value.password
+    })
     // For development: Set a dummy token
     await userStore.initStore('dummy-token-for-development')
 

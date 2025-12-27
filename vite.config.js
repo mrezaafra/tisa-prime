@@ -19,9 +19,7 @@ export default defineConfig({
     },
     css: {
         preprocessorOptions: {
-            scss: {
-                additionalData: `@use "@/assets/styles/variables.scss" as *;`
-            }
+            scss: {}
         }
     },
     build: {
@@ -54,7 +52,7 @@ export default defineConfig({
         open: false,
         hmr: true,
         proxy: {
-            '/api': 'http://localhost:8000/'
+            '/api': 'http://localhost:8080/'
         }
     },
 })

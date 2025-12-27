@@ -1,5 +1,6 @@
 import { useToast } from 'primevue/usetoast';
 import appConfig from "@/config/app.js";
+import { getGlobalToast } from "@/composables/globalService";
 
 function getToastInstance() {
     if (typeof window !== 'undefined' && window.__primevue_toast_instance__) {
@@ -10,9 +11,10 @@ function getToastInstance() {
     } catch (error) {
         return {
             add: (options) => {
-                if (typeof window !== 'undefined' && window.toast) {
+                const globalToast = getGlobalToast()
+                if (globalToast) {
                     const severity = options.severity || 'info'
-                    window.toast[severity](options.detail || options.summary || '')
+                    globalToast[severity](options.detail || options.summary || '')
                 } else {
                     console.warn('Toast service not available:', options)
                 }

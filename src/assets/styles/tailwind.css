@@ -1,0 +1,15 @@
+/* Tailwind CSS v4 - Must be in a CSS file, not SCSS */
+@import "tailwindcss";
+
+/* PrimeVue 4 + Tailwind CSS integration */
+@import "tailwindcss-primeui";
+
+/* Tailwind CSS v4 Theme Configuration */
+@theme {
+    /* Example theme customizations - uncomment and modify as needed */
+    /*
+    --color-primary: #14b8a6;
+    --color-secondary: #8b5cf6;
+    --font-sans: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    */
+}

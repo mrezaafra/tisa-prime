@@ -1,6 +1,7 @@
 import moment from "jalali-moment";
 import toast from '@/utility/plugins/toast'
 import { i18n } from '@/utility/plugins/i18n'
+import { getGlobalToast, getGlobalT } from '@/composables/globalService'
 
 const { t } = i18n.global
 
@@ -361,10 +362,12 @@ export const validateForm = async function (formElementOrRef) {
   })
 
   if (!isValid) {
-    if (typeof window !== 'undefined' && window.toast) {
-      window.toast.error(t('errors.validateInput'))
+    const globalToast = getGlobalToast()
+    const globalT = getGlobalT() || t
+    if (globalToast) {
+      globalToast.error(globalT('errors.validateInput'))
     } else {
-      toast.error(t('errors.validateInput'))
+      toast.error(globalT('errors.validateInput'))
     }
   }
 

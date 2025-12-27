@@ -11,44 +11,47 @@
 
 <script setup>
 import { RouterView } from 'vue-router'
+import { getCurrentInstance } from 'vue'
 import TisaLoading from "@/components/custom/loading/TisaLoading.vue";
-import { ref, getCurrentInstance } from "vue";
-import toast from "@/utility/plugins/toast.js";
+import { useLoading } from '@/composables/useLoading'
 import { useI18n } from '@/composables/useI18n'
-import { useToast } from 'primevue/usetoast'
+import { useToast as usePrimeToast } from 'primevue/usetoast'
+import { initGlobalService } from '@/composables/globalService'
+import { initSendRequest } from '@/composables/sendRequest'
+import toast from "@/utility/plugins/toast.js";
+import { useSendRequest } from "@/composables/index.js";
 
-const { t } = useI18n()
-const toastInstance = useToast()
+const {isLoading: loadingModel, loadingMessage, show: showLoading, hide: hideLoading} = useLoading()
+const {t} = useI18n()
+const toastInstance = usePrimeToast()
+const {sendRequest} = useSendRequest()
 
 // Expose toast instance globally for use in utility functions
 if (typeof window !== 'undefined') {
-    window.__primevue_toast_instance__ = toastInstance
+  window.__primevue_toast_instance__ = toastInstance
 }
 
-/**
- * Global loading state management
- * Exposed on window for backward compatibility with existing code
- */
-const loadingModel = ref(false)
-const loadingMessage = ref(null)
-
+// Initialize global service for utility scripts
 const loading = {
-  show: (message = null) => {
-    loadingModel.value = true
-    loadingMessage.value = message
-  },
-  hide: () => {
-    loadingModel.value = false
-    loadingMessage.value = null
-  }
+  show: showLoading,
+  hide: hideLoading
 }
 
-// Expose globally for backward compatibility
-// TODO: Migrate to composables in future refactoring
-if (typeof window !== 'undefined') {
-  window.loading = loading
-  window.toast = toast
-  window.$t = t
+initGlobalService({
+  sendRequest,
+  loading,
+  toast,
+  t
+})
+
+// Initialize sendRequest module for direct imports
+initSendRequest(sendRequest)
+
+// Make sendRequest available globally in all Vue components
+const instance = getCurrentInstance()
+if (instance) {
+  instance.appContext.config.globalProperties.$sendRequest = sendRequest
+  instance.appContext.config.globalProperties.sendRequest = sendRequest
 }
 </script>
 

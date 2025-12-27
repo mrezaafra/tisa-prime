@@ -1,3 +1,6 @@
 export { useLoading } from './useLoading'
 export { useToast } from './useToast'
 export { useI18n } from './useI18n'
+export { useSendRequest } from './useSendRequest'
+export { sendRequest } from './sendRequest'
+export { initGlobalService, getGlobalLoading, getGlobalToast, getGlobalT, getGlobalSendRequest } from './globalService'

@@ -1,6 +1,7 @@
 // Styles
 import 'primeicons/primeicons.css'
-import './assets/styles/global.scss'
+import './assets/styles/tailwind.css'  // Tailwind CSS v4 (must be CSS, not SCSS)
+import './assets/styles/global.scss'  // Custom SCSS styles
 // Store
 import { createPinia } from 'pinia'
 import persistedState from 'pinia-plugin-persistedstate'
@@ -20,9 +21,6 @@ import ToastService from 'primevue/toastservice';
 const pinia = createPinia()
 pinia.use(persistedState)
 // ----------
-const t = i18n.global.t
-window.$t = t
-// ----------
 consoleCopyRight()
 // ----------
 const app = createApp(App)
@@ -32,5 +30,6 @@ app.use(router)
 app.use(i18n)
 app.use(framework.primeVue, framework.options)
 
+// Note: sendRequest will be added to globalProperties in App.vue after initialization
 app.mount('#app')
 

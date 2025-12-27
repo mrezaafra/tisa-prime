@@ -7,6 +7,7 @@ import {createRouter, createWebHistory} from "vue-router";
 // Guard (Middleware) --------------------------------------------------------------------------------------------------
 import {useUserStore} from "@/stores/user";
 import {middleware} from "@/router/middleware/middleware";
+import {getGlobalLoading, getGlobalToast, getGlobalT} from "@/composables/globalService";
 
 const {t} = i18n.global
 
@@ -40,14 +41,17 @@ router.onError((error) => {
     console.error('Router error:', error)
     
     // Hide loading if it exists
-    if (typeof window !== 'undefined' && window.loading) {
-        window.loading.hide()
+    const loading = getGlobalLoading()
+    if (loading) {
+        loading.hide()
     }
     
     // Show error toast
-    const errorMessage = t('errors.routeChange')
-    if (typeof window !== 'undefined' && window.toast) {
-        window.toast.error(errorMessage)
+    const globalT = getGlobalT() || t
+    const errorMessage = globalT('errors.routeChange')
+    const toast = getGlobalToast()
+    if (toast) {
+        toast.error(errorMessage)
     }
 })
 

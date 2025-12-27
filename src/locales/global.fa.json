@@ -9,6 +9,7 @@
     "password": "رمز عبور"
   },
   "loading": {
-    "fetchDataFrom": "در حال برقراری ارتباط با {source}..."
+    "fetchDataFrom": "در حال برقراری ارتباط با {source}...",
+    "pleaseWaite": "لطفاً شکیبا باشید..."
   }
 }

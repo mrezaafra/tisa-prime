@@ -8,8 +8,9 @@
             <div class="dot"></div>
             <div class="dot"></div>
           </div>
-          <p v-if="message" class="tisa-loading-message">
-            {{ message }}
+
+          <p class="tisa-loading-msg">
+            {{ message ?? $t('loading.pleaseWaite') }}
           </p>
         </div>
       </div>
@@ -43,72 +44,43 @@ const handleOverlayClick = () => {
 }
 </script>
 
-<style scoped lang="scss">
-@use '@/assets/styles/variables.scss' as *;
+<style scoped>
+@import "tailwindcss" reference;
 
-// Overlay
 .tisa-loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: $loading-overlay-bg;
-  backdrop-filter: blur($loading-overlay-blur);
-  z-index: $loading-overlay-z-index;
+  @apply fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-[9999];
 }
 
-// Container
 .tisa-loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  padding: 5px;
-  width: 140px;
-  min-height: 140px;
+  @apply flex flex-col items-center justify-center w-40 min-h-40 rounded-sm py-8 px-1 shadow-lg;
   background-color: rgba(var(--p-surface-0-rgb, 255, 255, 255), 0.8);
-  border-radius: 10px;
-  box-shadow: $loading-container-shadow;
 }
 
-// Dots loader
 .dots-loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @apply flex items-center justify-center;
 }
 
-// Dot base styles
 .dot {
-  width: 15px;
-  height: 15px;
-  border-radius: 2px;
-  transition: all 1s linear;
-  animation: bounce .7s ease 0s alternate infinite;
-  background-color: $loading-dot-color-primary;
+  @apply w-[15px] h-[15px] rounded-sm transition-all duration-1000 ease-linear;
+  animation: bounce 0.7s ease 0s alternate infinite;
+  background-color: #059ca7;
 }
 
 .dot:first-child {
-  background-color: $loading-dot-color-accent !important;
+  @apply ml-2.5;
+  background-color: #a91c5e !important;
   animation-delay: 0s;
-  margin-left: 10px;
 }
 
 .dot:nth-child(2) {
+  @apply ml-1;
   animation-delay: 0.2s;
-  margin-left: 4px;
 }
 
 .dot:nth-child(3) {
   animation-delay: 0.4s;
 }
 
-// Bounce animation
 @keyframes bounce {
   0% {
     transform: scale(1);
@@ -118,13 +90,7 @@ const handleOverlayClick = () => {
   }
 }
 
-// Message
-.tisa-loading-message {
-  font-size: $loading-message-font-size;
-  font-weight: $loading-message-font-weight;
-  color: var(--p-surface-700, #374151);
-  text-align: center;
-  direction: rtl;
-  transition: opacity 0.3s linear;
+.tisa-loading-msg {
+  @apply text-center mt-4 text-xs;
 }
 </style>

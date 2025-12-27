@@ -1,6 +1,6 @@
 import { getFullConfigUrl } from "@/utility/scripts/system.js";
 
-export const appConfig = {
+export const appConfig = Object.freeze({
     url: {
         accessManagement: getFullConfigUrl(import.meta.env.VITE_ACCESS_MANAGEMENT_URL) || null,
     },
@@ -10,6 +10,6 @@ export const appConfig = {
     toast: {
         time: 3000, //ms
     }
-}
+})
 
 export default appConfig
